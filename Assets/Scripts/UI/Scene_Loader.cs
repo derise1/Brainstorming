@@ -3,9 +3,13 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Scene_Loader : Singleton<Scene_Loader>
 {
+    [SerializeField] private float transitionEffectTime = 1f;
+    [SerializeField] private Image transitionImage;
+
     public void LoadNextScene()
     {
         LoadNextSceneAsync(SceneManager.GetActiveScene().buildIndex + 1).Forget();
@@ -13,16 +17,18 @@ public class Scene_Loader : Singleton<Scene_Loader>
 
     private async UniTaskVoid LoadNextSceneAsync(int sceneIndex)
     {
-        await UniTask.WaitUntil(() => TransitionEffect());
-        SceneManager.LoadSceneAsync(sceneIndex);
+        TransitionEffect(true);
+        await UniTask.WaitForSeconds(transitionEffectTime);
+        await SceneManager.LoadSceneAsync(sceneIndex);
+        TransitionEffect(false);
     }
 
-    private bool TransitionEffect()
+    private void TransitionEffect(bool value)
     {
-        // DOTween.Sequence()
-        //     .Append()
-        //     .Play();
-
-        return true;
+        transitionImage.raycastTarget = true;
+        DOTween.Sequence()
+            .Append(value ? transitionImage.DOFade(1f, 0.5f) : transitionImage.DOFade(0f, 0.5f))
+            .Play();
+        transitionImage.raycastTarget = false;
     }
 }
