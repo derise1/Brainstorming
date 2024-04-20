@@ -1,0 +1,38 @@
+[
+    {
+        "question": "Какая страна самая большая в мире?",
+        "answers": 
+        [
+            {"text": "Россия", "correct": true},
+            {"text": "США", "correct": false},
+            {"text": "Китай", "correct": false},
+            {"text": "Канада", "correct": false}
+        ],
+        "background": "Backgrounds/russia.jpg"
+    },
+    {
+        "question": "Что из этого цифра?",
+        "answers": 
+        [
+            {"text": "1", "correct": true},
+            {"text": "32", "correct": false},
+            {"text": "2", "correct": true},
+            {"text": "9", "correct": true},
+            {"text": "10", "correct": false},
+            {"text": "5", "correct": true},
+            {"text": "4", "correct": true}
+        ],
+        "background": "Backgrounds/numbers.jpg"
+    },
+    {
+        "question": "Какой металл самый тяжелый?",
+        "answers": 
+        [
+            {"text": "Золото", "correct": false},
+            {"text": "Платина", "correct": false},
+            {"text": "Олово", "correct": false},
+            {"text": "Осмий", "correct": true}
+        ],
+        "background": "Backgrounds/osmium.jpg"
+    }
+]

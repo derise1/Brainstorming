@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -12,7 +12,14 @@ public class Scene_Loader : Singleton<Scene_Loader>
 
     public void LoadNextScene()
     {
-        LoadNextSceneAsync(SceneManager.GetActiveScene().buildIndex + 1).Forget();
+        if(SceneManager.GetActiveScene().buildIndex + 1 > SceneManager.sceneCount)
+        {
+            LoadNextSceneAsync(0).Forget();
+        }
+        else
+        {
+            LoadNextSceneAsync(SceneManager.GetActiveScene().buildIndex + 1).Forget();
+        }
     }
 
     private async UniTaskVoid LoadNextSceneAsync(int sceneIndex)
