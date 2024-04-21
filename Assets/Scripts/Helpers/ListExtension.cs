@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public static class ListExtensions
 {
     private static Random random = new Random();
 
-    public static void Shuffle<T>(this IList<T> list)
+    public static void Shuffle<T>(this List<T> list)
     {
         int n = list.Count;
         while (n > 1)

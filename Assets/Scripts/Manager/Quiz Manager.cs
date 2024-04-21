@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,10 @@ public class QuizManager : MonoBehaviour
     private const string JSON_FILE_NAME = "quiz_data.json";
     private string pathToFile = Application.streamingAssetsPath + "/" + JSON_FILE_NAME;
     
-    [Header("Text object")]
     [SerializeField] private TextMeshProUGUI currentCountQustion;
     [SerializeField] private TextMeshProUGUI allCountQuestion;
     [SerializeField] private TextMeshProUGUI questionText;
 
-    [Header("References")]
     [SerializeField] private Button_Answer buttonPrefab;
     [SerializeField] private GameObject containerQuestion;
     [SerializeField] private GameObject containerButton;
@@ -37,6 +36,7 @@ public class QuizManager : MonoBehaviour
         correctPanel.NextButton.onClick.AddListener(NextQuestion);
 
         questionsList = JsonReader.FromJson<Question>(pathToFile);
+
         allCountQuestion.text = questionsList.Count.ToString();
 
         NextQuestion();
@@ -78,21 +78,17 @@ public class QuizManager : MonoBehaviour
         currentCountQustion.text = (currentIndexQuestion + 1).ToString();
         questionText.text = questionsList[currentIndexQuestion].question;
 
-        if(!string.IsNullOrEmpty(questionsList[currentIndexQuestion].background))
-        {
-            string path = Path.Combine(Application.streamingAssetsPath, questionsList[currentIndexQuestion].background);
-            Texture2D texture = new Texture2D(1, 1);
-            texture.LoadImage(File.ReadAllBytes(path));
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            backgroundQuestion.sprite = sprite;
-        }
+        LoadBackground(questionsList[currentIndexQuestion].background);
 
         CreateButtonAnswer();
     }
 
     private void CreateButtonAnswer()
     {
-        questionsList[currentIndexQuestion].answers.Shuffle();
+        if(questionsList[currentIndexQuestion].answers.Count > 1)
+        {
+            questionsList[currentIndexQuestion].answers.Shuffle();
+        }
 
         foreach(var answer in questionsList[currentIndexQuestion].answers)
         {
@@ -121,7 +117,7 @@ public class QuizManager : MonoBehaviour
                 {   
                     foreach(RectTransform child in containerButton.transform)
                     {
-                        child.DOScale(0.1f, 0.7f).SetEase(Ease.InQuad).OnComplete(() => {
+                        child.DOScale(0.1f, 0.7f).SetEase(Ease.InSine).OnComplete(() => {
                             Destroy(child.gameObject);
                         });
                     }
@@ -145,13 +141,36 @@ public class QuizManager : MonoBehaviour
         }
     }
 
-    private bool CheckCountCorrectAnswer()
+    private void LoadBackground(string backgroundPath)
     {
-        return GetCountCorrectAnswer() > 1;
+        if(string.IsNullOrEmpty(backgroundPath))
+        {
+            backgroundQuestion.sprite = null;
+        }
+        else
+        {
+            try
+            {
+                string path = Path.Combine(Application.streamingAssetsPath, backgroundPath);
+                Texture2D texture = new Texture2D(1, 1);
+                texture.LoadImage(File.ReadAllBytes(path));
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                backgroundQuestion.sprite = sprite;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error for load background from path " + e.Message);
+            }
+        }
     }
 
     private int GetCountCorrectAnswer()
     {
         return questionsList[currentIndexQuestion].answers.Count(answer => answer.correct == true);
+    }
+
+    private bool CheckCountCorrectAnswer()
+    {
+        return GetCountCorrectAnswer() > 1;
     }
 }

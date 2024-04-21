@@ -34,5 +34,16 @@
             {"text": "Осмий", "correct": true}
         ],
         "background": "Backgrounds/osmium.jpg"
+    },
+    {
+        "question": "Что из этого не является фруктом?",
+        "answers": 
+        [
+            {"text": "Огурец", "correct": true},
+            {"text": "Банан", "correct": false},
+            {"text": "Слива", "correct": false},
+            {"text": "Горох", "correct": false}
+        ],
+        "background": ""
     }
 ]

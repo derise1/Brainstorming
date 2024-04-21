@@ -13,6 +13,18 @@ public static class JsonReader
         List<T> questionsTemp = JsonConvert.DeserializeObject<List<T>>(jsonText);
         return questionsTemp;
     }
+
+    public static void SaveToJson<T>(List<T> list, string filePath)
+    {
+        IsFileExists(filePath);
+
+        if(list.Count > 0)
+        {
+            string jsonText = JsonConvert.SerializeObject(list, Formatting.Indented);
+
+            File.WriteAllText(filePath, jsonText);
+        }
+    }
     
     private static void IsFileExists(string filePath)
     {
