@@ -19,9 +19,15 @@ public class Correct_Panel : MonoBehaviour
 
     public Button NextButton => nextButton;
 
+    private TextMeshProUGUI _buttonText;
+    private Image _buttonImage;
+
     private void Awake()
     {
         nextButton.onClick.AddListener(OnClickButtonNext);
+
+        _buttonText = nextButton.GetComponentInChildren<TextMeshProUGUI>();
+        _buttonImage = nextButton.GetComponentInChildren<Image>();
     }
 
     public void ShowCorrectPanel(bool correct)
@@ -29,27 +35,27 @@ public class Correct_Panel : MonoBehaviour
         correctBackground.color = correct ? correctColor : uncorrectColor;
         correctText.text = correct ? correctTextField : uncorrectTextField;
         gameObject.SetActive(true);
+        
         DOTween.Sequence()
-            .Append(correctBackground.DOFade(0.5f, 0.7f))
-            .Join(correctText.DOFade(1f, 0.7f))
+            .Append(correctBackground.DOFade(0.5f, 0.6f))
+            .Join(correctText.DOFade(1f, 0.6f))
+            .Join(_buttonText.DOFade(1f, 0.6f))
+            .Join(_buttonImage.DOFade(1f, 0.6f))
             .Play();
     }
 
     public void OnClickButtonNext()
     {
         DOTween.Sequence()
-            .Append(nextButton.transform.DOScale(0.9f, 0.2f))
-            .OnComplete(() => { 
-                nextButton.transform.DOScale(1f, 0.2f); 
-                correctBackground.DOFade(0, 0.7f);
-                correctText.DOFade(0f, 0.7f);
-            })
+            .Append(correctBackground.DOFade(0f, 0.6f))
+            .Join(correctText.DOFade(0f, 0.6f))
+            .Join(_buttonText.DOFade(0f, 0.6f))
+            .Join(_buttonImage.DOFade(0f, 0.6f))
             .OnComplete(() => {
                 correctBackground.color = Color.white;
                 correctText.text = "";
                 gameObject.SetActive(false);
             })
             .Play();
-        gameObject.SetActive(false);
     }
 }

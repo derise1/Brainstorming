@@ -45,5 +45,16 @@
             {"text": "Горох", "correct": false}
         ],
         "background": ""
+    },
+    {
+        "question": "Что является именем?",
+        "answers": 
+        [
+            {"text": "Мария", "correct": true},
+            {"text": "Васильевич", "correct": false},
+            {"text": "Вы", "correct": false},
+            {"text": "Москва", "correct": false}
+        ],
+        "background": ""
     }
 ]

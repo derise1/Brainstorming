@@ -12,15 +12,18 @@ public class QuizManager : MonoBehaviour
     private const string JSON_FILE_NAME = "quiz_data.json";
     private string pathToFile = Application.streamingAssetsPath + "/" + JSON_FILE_NAME;
     
+    [Header("TEXT REFERENCES")]
     [SerializeField] private TextMeshProUGUI currentCountQustion;
     [SerializeField] private TextMeshProUGUI allCountQuestion;
     [SerializeField] private TextMeshProUGUI questionText;
 
+    [Header("OBJECT REFERENCES")]
     [SerializeField] private Button_Answer buttonPrefab;
     [SerializeField] private GameObject containerQuestion;
     [SerializeField] private GameObject containerButton;
     [SerializeField] private Image backgroundQuestion;
 
+    [Header("PANEL REFERENCES")]
     [SerializeField] private Correct_Panel correctPanel;
     [SerializeField] private EndGamePanel endGamePanel;
 
@@ -46,7 +49,7 @@ public class QuizManager : MonoBehaviour
     {
         if(!buttonAnswer.Answer.correct)
         {
-            ShowCorrectPanel(buttonAnswer);
+            ClearQuestion(buttonAnswer);
         }
         else
         {
@@ -59,28 +62,37 @@ public class QuizManager : MonoBehaviour
                     if(currentCorrectAnswer == 0)
                     {
                         allCountCorrectAnswer++;
-                        ShowCorrectPanel(buttonAnswer);
+                        ClearQuestion(buttonAnswer);
                     }
                 }
             }
             else
             {
                 allCountCorrectAnswer++;
-                ShowCorrectPanel(buttonAnswer);
+                ClearQuestion(buttonAnswer);
             }
         }
     }
 
     private void NextQuestion()
     {
-        currentIndexQuestion++;
+        if(currentIndexQuestion >= questionsList.Count - 1)
+        {
+            containerQuestion.SetActive(false);
+            endGamePanel.ShowEndPanel(allCountCorrectAnswer);
+            backgroundQuestion.sprite = null;
+        }
+        else
+        {
+            currentIndexQuestion++;
 
-        currentCountQustion.text = (currentIndexQuestion + 1).ToString();
-        questionText.text = questionsList[currentIndexQuestion].question;
+            currentCountQustion.text = (currentIndexQuestion + 1).ToString();
+            questionText.text = questionsList[currentIndexQuestion].question;
 
-        LoadBackground(questionsList[currentIndexQuestion].background);
+            LoadBackground(questionsList[currentIndexQuestion].background);
 
-        CreateButtonAnswer();
+            CreateButtonAnswer();
+        }
     }
 
     private void CreateButtonAnswer()
@@ -106,7 +118,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
-    private void ClearQuestion(Answer answer)
+    private void ClearQuestion(Button_Answer buttonAnswer)
     {
         questionText.text = "";
         
@@ -117,27 +129,13 @@ public class QuizManager : MonoBehaviour
                 {   
                     foreach(RectTransform child in containerButton.transform)
                     {
-                        child.DOScale(0.1f, 0.7f).SetEase(Ease.InSine).OnComplete(() => {
+                        child.DOScale(0f, 0.5f).OnComplete(() => {
                             Destroy(child.gameObject);
                         });
                     }
                 })
-                .OnComplete(() => correctPanel.ShowCorrectPanel(answer.correct))
+                .OnComplete(() => correctPanel.ShowCorrectPanel(buttonAnswer.Answer.correct))
                 .Play();
-        }
-    }
-
-    private void ShowCorrectPanel(Button_Answer buttonAnswer)
-    {
-        if(currentIndexQuestion >= questionsList.Count - 1)
-        {
-            containerQuestion.SetActive(false);
-            endGamePanel.ShowEndPanel(allCountCorrectAnswer);
-            backgroundQuestion.sprite = null;
-        }
-        else
-        {
-            ClearQuestion(buttonAnswer.Answer);
         }
     }
 
