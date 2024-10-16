@@ -37,11 +37,8 @@ public class QuizManager : MonoBehaviour
     {
         containerQuestion.SetActive(true);
         correctPanel.NextButton.onClick.AddListener(NextQuestion);
-
         questionsList = JsonReader.FromJson<Question>(pathToFile);
-
         allCountQuestion.text = questionsList.Count.ToString();
-
         NextQuestion();
     }
 
