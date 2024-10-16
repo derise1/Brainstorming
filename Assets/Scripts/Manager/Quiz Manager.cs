@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DG.Tweening;
+using QuizGame.Service;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class QuizManager : MonoBehaviour
 {
-    private const string JSON_FILE_NAME = "quiz_data.json";
-    private string pathToFile = Application.streamingAssetsPath + "/" + JSON_FILE_NAME;
-    
     [Header("TEXT REFERENCES")]
     [SerializeField] private TextMeshProUGUI currentCountQustion;
     [SerializeField] private TextMeshProUGUI allCountQuestion;
@@ -27,7 +25,9 @@ public class QuizManager : MonoBehaviour
     [SerializeField] private Correct_Panel correctPanel;
     [SerializeField] private EndGamePanel endGamePanel;
 
-    private List<Question> questionsList = new ();
+    private QuestionsService _questionsService;
+    
+    private List<Question> questionsList;
     private int currentIndexQuestion = -1;
 
     private int allCountCorrectAnswer = 0;
@@ -35,9 +35,12 @@ public class QuizManager : MonoBehaviour
 
     private void Awake()
     {
+        _questionsService = new QuestionsService();
+        questionsList = new(_questionsService.Questions);
+        
         containerQuestion.SetActive(true);
         correctPanel.NextButton.onClick.AddListener(NextQuestion);
-        questionsList = JsonReader.FromJson<Question>(pathToFile);
+        
         allCountQuestion.text = questionsList.Count.ToString();
         NextQuestion();
     }
