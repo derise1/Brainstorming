@@ -1,8 +1,12 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class Answer
 {
-    public string text;
-    public bool correct;
+    [SerializeField] private string text;
+    [SerializeField] private bool correct;
+
+    public string Text => text;
+    public bool IsCorrect => correct;
 }

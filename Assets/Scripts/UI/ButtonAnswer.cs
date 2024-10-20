@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Button_Answer : MonoBehaviour, IPointerClickHandler
+public class ButtonAnswer : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private TextMeshProUGUI textAnswer;
     private Answer _answer;
@@ -15,7 +15,7 @@ public class Button_Answer : MonoBehaviour, IPointerClickHandler
     public void SetAnswer(Answer answer, QuizManager quizManager)
     {
         _answer = answer;
-        textAnswer.text = answer.text;
+        textAnswer.text = answer.Text;
         _quizManager = quizManager;
     }
 

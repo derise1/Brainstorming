@@ -16,7 +16,7 @@ public class QuizManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI questionText;
 
     [Header("OBJECT REFERENCES")]
-    [SerializeField] private Button_Answer buttonPrefab;
+    [SerializeField] private ButtonAnswer buttonPrefab;
     [SerializeField] private GameObject containerQuestion;
     [SerializeField] private GameObject containerButton;
     [SerializeField] private Image backgroundQuestion;
@@ -45,9 +45,9 @@ public class QuizManager : MonoBehaviour
         NextQuestion();
     }
 
-    public void CheckCorrectAnswer(Button_Answer buttonAnswer)
+    public void CheckCorrectAnswer(ButtonAnswer buttonAnswer)
     {
-        if(!buttonAnswer.Answer.correct)
+        if(!buttonAnswer.Answer.IsCorrect)
         {
             ClearQuestion(buttonAnswer);
         }
@@ -87,9 +87,9 @@ public class QuizManager : MonoBehaviour
             currentIndexQuestion++;
 
             currentCountQustion.text = (currentIndexQuestion + 1).ToString();
-            questionText.text = questionsList[currentIndexQuestion].question;
+            questionText.text = questionsList[currentIndexQuestion].NameQuestion;
 
-            LoadBackground(questionsList[currentIndexQuestion].background);
+            LoadBackground(questionsList[currentIndexQuestion].BackgroundPath);
 
             CreateButtonAnswer();
         }
@@ -97,15 +97,15 @@ public class QuizManager : MonoBehaviour
 
     private void CreateButtonAnswer()
     {
-        if(questionsList[currentIndexQuestion].answers.Count > 1)
+        if(questionsList[currentIndexQuestion].Answers.Count > 1)
         {
-            questionsList[currentIndexQuestion].answers.Shuffle();
+            questionsList[currentIndexQuestion].Answers.ToList().Shuffle();
         }
 
-        foreach(var answer in questionsList[currentIndexQuestion].answers)
+        foreach(var answer in questionsList[currentIndexQuestion].Answers)
         {
-            Button_Answer button_Answer = Instantiate(buttonPrefab, containerButton.transform);
-            button_Answer.SetAnswer(answer, this);
+            ButtonAnswer buttonAnswer = Instantiate(buttonPrefab, containerButton.transform);
+            buttonAnswer.SetAnswer(answer, this);
         }
 
         if(CheckCountCorrectAnswer())
@@ -118,7 +118,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
-    private void ClearQuestion(Button_Answer buttonAnswer)
+    private void ClearQuestion(ButtonAnswer buttonAnswer)
     {
         questionText.text = "";
         
@@ -134,7 +134,7 @@ public class QuizManager : MonoBehaviour
                         });
                     }
                 })
-                .OnComplete(() => correctPanel.ShowCorrectPanel(buttonAnswer.Answer.correct))
+                .OnComplete(() => correctPanel.ShowCorrectPanel(buttonAnswer.Answer.IsCorrect))
                 .Play();
         }
     }
@@ -164,7 +164,7 @@ public class QuizManager : MonoBehaviour
 
     private int GetCountCorrectAnswer()
     {
-        return questionsList[currentIndexQuestion].answers.Count(answer => answer.correct == true);
+        return questionsList[currentIndexQuestion].Answers.Count(answer => answer.IsCorrect == true);
     }
 
     private bool CheckCountCorrectAnswer()
